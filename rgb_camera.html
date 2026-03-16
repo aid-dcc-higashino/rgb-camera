@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>RGB × Multiply</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #video {
+    position: fixed;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #000;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.04s;
+  }
+  .overlay.active { opacity: 1; }
+  .overlay.r { background: #ff0000; }
+  .overlay.g { background: #00ff00; }
+  .overlay.b { background: #0000ff; }
+
+  #startScreen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 100;
+  }
+  #startScreen p {
+    color: #666;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-align: center;
+    line-height: 1.8;
+  }
+  #startBtn {
+    padding: 16px 44px;
+    background: transparent;
+    border: 1.5px solid #555;
+    color: #ccc;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    cursor: pointer;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  #errMsg { color: #ff5555; font-size: 12px; letter-spacing: 0.08em; min-height: 18px; }
+
+  #timerBar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    z-index: 20;
+    background: rgba(255,255,255,0.05);
+  }
+  #timerFill {
+    height: 100%;
+    width: 0%;
+    border-radius: 0 2px 2px 0;
+  }
+
+  #channelLabel {
+    position: fixed;
+    top: 14px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: transparent;
+    z-index: 20;
+    text-transform: uppercase;
+    text-shadow: 0 1px 6px #000;
+    transition: color 0.08s;
+  }
+  #channelLabel.r-on { color: #ff8888; }
+  #channelLabel.g-on { color: #88ffcc; }
+  #channelLabel.b-on { color: #88bbff; }
+
+  #controls {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 20;
+    padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 100%);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: rgba(0,0,0,0.35);
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.08s, box-shadow 0.12s, transform 0.08s;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .btn:active { transform: scale(0.90); }
+
+  .btn-r { color: #ff6666; border-color: rgba(255,102,102,0.75); }
+  .btn-r.on { background: #ff3333; color: #000; box-shadow: 0 0 32px rgba(255,51,51,0.8); border-color: #ff3333; }
+
+  .btn-g { color: #66ffaa; border-color: rgba(102,255,170,0.75); }
+  .btn-g.on { background: #33ff88; color: #000; box-shadow: 0 0 32px rgba(51,255,136,0.8); border-color: #33ff88; }
+
+  .btn-b { color: #66aaff; border-color: rgba(102,170,255,0.75); }
+  .btn-b.on { background: #3377ff; color: #000; box-shadow: 0 0 32px rgba(51,119,255,0.8); border-color: #3377ff; }
+
+  .btn-sub {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.45);
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    text-transform: uppercase;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all 0.12s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .btn-sub:active { transform: scale(0.92); }
+  .btn-sub.on { border-color: rgba(255,255,255,0.6); color: rgba(255,255,255,0.9); }
+</style>
+</head>
+<body>
+
+<video id="video" autoplay muted playsinline></video>
+<div class="overlay r" id="ovR"></div>
+<div class="overlay g" id="ovG"></div>
+<div class="overlay b" id="ovB"></div>
+
+<div id="timerBar"><div id="timerFill"></div></div>
+<div id="channelLabel"></div>
+
+<div id="startScreen">
+  <svg width="56" height="44" viewBox="0 0 56 44" fill="none" opacity="0.5">
+    <rect x="1" y="7" width="54" height="36" rx="4" stroke="#aaa" stroke-width="1.5"/>
+    <circle cx="28" cy="25" r="10" stroke="#aaa" stroke-width="1.5"/>
+    <circle cx="28" cy="25" r="4.5" fill="#aaa"/>
+    <path d="M19 7 L22 1 H34 L37 7" stroke="#aaa" stroke-width="1.5"/>
+    <circle cx="45" cy="14" r="2.5" fill="#aaa"/>
+  </svg>
+  <p>カメラへのアクセスを<br>許可してください</p>
+  <button id="startBtn" onclick="startCamera()">カメラ起動</button>
+  <span id="errMsg"></span>
+</div>
+
+<div id="controls" style="display:none;">
+  <div class="btn-row">
+    <button class="btn-sub" id="btnCycle" onclick="toggleCycle()">AUTO<br>CYCLE</button>
+    <button class="btn btn-r" id="btnR" onclick="triggerColor('r')">R</button>
+    <button class="btn btn-g" id="btnG" onclick="triggerColor('g')">G</button>
+    <button class="btn btn-b" id="btnB" onclick="triggerColor('b')">B</button>
+    <button class="btn-sub" id="btnFlip" onclick="flipCamera()">
+      <svg width="24" height="20" viewBox="0 0 24 20" fill="none">
+        <path d="M3 10 C3 6 6.5 3 12 3 C15.5 3 18.5 4.8 19.5 7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M21 10 C21 14 17.5 17 12 17 C8.5 17 5.5 15.2 4.5 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M17.5 5.5 L19.5 7.5 L21.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.5 14.5 L4.5 12.5 L2.5 14.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-size:8px;">FLIP</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  const video     = document.getElementById('video');
+  const startScr  = document.getElementById('startScreen');
+  const controls  = document.getElementById('controls');
+  const timerFill = document.getElementById('timerFill');
+  const chanLabel = document.getElementById('channelLabel');
+  const errMsg    = document.getElementById('errMsg');
+  const btnCycle  = document.getElementById('btnCycle');
+
+  const overlays = {
+    r: document.getElementById('ovR'),
+    g: document.getElementById('ovG'),
+    b: document.getElementById('ovB')
+  };
+  const btns = {
+    r: document.getElementById('btnR'),
+    g: document.getElementById('btnG'),
+    b: document.getElementById('btnB')
+  };
+
+  const colorInfo = {
+    r: { label: 'RED CHANNEL',   bar: '#ff3333' },
+    g: { label: 'GREEN CHANNEL', bar: '#33ff88' },
+    b: { label: 'BLUE CHANNEL',  bar: '#3377ff' }
+  };
+
+  let animFrame = null, activeTimeout = null;
+  let cycling = false;
+  const seq = ['r','g','b'];
+  let seqIdx = 0;
+  let currentStream = null;
+  let facingMode = 'environment';
+
+  async function startCamera() {
+    errMsg.textContent = '接続中...';
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        audio: false
+      });
+      applyStream(stream);
+      startScr.style.display = 'none';
+      controls.style.display = 'flex';
+    } catch(e) {
+      errMsg.textContent = e.name === 'NotAllowedError' ? '許可が必要です' : 'エラー: ' + e.message;
+    }
+  }
+
+  function applyStream(stream) {
+    if (currentStream) currentStream.getTracks().forEach(t => t.stop());
+    currentStream = stream;
+    video.srcObject = stream;
+  }
+
+  async function flipCamera() {
+    const prev = facingMode;
+    facingMode = facingMode === 'environment' ? 'user' : 'environment';
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        audio: false
+      });
+      applyStream(stream);
+    } catch(e) {
+      facingMode = prev;
+    }
+  }
+
+  function clearAll() {
+    for (const k in overlays) { overlays[k].classList.remove('active'); btns[k].classList.remove('on'); }
+    chanLabel.className = '';
+    chanLabel.textContent = '';
+    timerFill.style.width = '0%';
+    if (activeTimeout) { clearTimeout(activeTimeout); activeTimeout = null; }
+    if (animFrame)     { cancelAnimationFrame(animFrame); animFrame = null; }
+  }
+
+  function activateColor(ch) {
+    clearAll();
+    overlays[ch].classList.add('active');
+    btns[ch].classList.add('on');
+    chanLabel.className = ch + '-on';
+    chanLabel.textContent = colorInfo[ch].label;
+    timerFill.style.background = colorInfo[ch].bar;
+
+    const start = performance.now(), dur = 1000;
+    function tick(now) {
+      const p = Math.min((now - start) / dur, 1);
+      timerFill.style.width = (p * 100).toFixed(1) + '%';
+      if (p < 1) animFrame = requestAnimationFrame(tick);
+    }
+    animFrame = requestAnimationFrame(tick);
+
+    activeTimeout = setTimeout(() => {
+      overlays[ch].classList.remove('active');
+      btns[ch].classList.remove('on');
+      chanLabel.className = '';
+      chanLabel.textContent = '';
+      timerFill.style.width = '0%';
+      if (cycling) { seqIdx = (seqIdx + 1) % seq.length; activateColor(seq[seqIdx]); }
+    }, dur);
+  }
+
+  function triggerColor(ch) {
+    if (cycling) return;
+    activateColor(ch);
+  }
+
+  function toggleCycle() {
+    if (cycling) {
+      cycling = false;
+      btnCycle.classList.remove('on');
+      clearAll();
+    } else {
+      cycling = true;
+      btnCycle.classList.add('on');
+      seqIdx = 0;
+      activateColor(seq[0]);
+    }
+  }
+</script>
+</body>
+</html>
