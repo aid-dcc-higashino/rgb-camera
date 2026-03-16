@@ -83,6 +83,7 @@
     color: rgba(255,255,255,0.35);
     text-align: center;
     margin-top: 20px;
+    margin-bottom: 24px;
     opacity: 0; transition: opacity 0.5s ease 0.9s;
   }
   #opTagline.visible { opacity: 1; }
@@ -173,15 +174,12 @@
   }
   #startBtn {
     padding: 12px 40px; background: transparent;
-    border: none;
-    outline: none;
-    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.28); color: rgba(255,255,255,0.7);
     font-family: var(--font);
     font-size: 15px; letter-spacing: 0.28em; cursor: pointer;
-    transition: opacity 0.15s;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Crect width='100%25' height='100%25' fill='none' rx='0' stroke='rgba(255,255,255,0.3)' stroke-width='1' stroke-dasharray='3 5' stroke-linecap='round'/%3E%3C/svg%3E");
+    transition: background 0.15s;
   }
-  #startBtn:active { opacity: 0.6; }
+  #startBtn:active { background: rgba(255,255,255,0.08); }
   #errMsg { font-family: var(--font); color: #ff5555; font-size: 11px; letter-spacing: 0.08em; min-height: 18px; }
 
   /* ===== カメラUI ===== */
@@ -208,12 +206,12 @@
     background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
   }
   .btn-row {
-    display: flex; gap: clamp(8px,3vw,16px);
+    display: flex; gap: clamp(6px, 2vw, 12px);
     align-items: center; justify-content: center;
-    width: 100%; padding: 0 8px;
+    width: 100%; padding: 0 max(16px, 4vw);
   }
   .btn, .btn-cycle, .btn-flip {
-    width: clamp(60px,17vw,76px); height: clamp(60px,17vw,76px);
+    width: clamp(48px,15vw,76px); height: clamp(48px,15vw,76px);
     border-radius: 50%; border: 1.5px solid;
     background: rgba(0,0,0,0.3);
     cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -293,76 +291,13 @@
 
 <!-- 起動画面 -->
 <div id="startScreen" style="display:none;">
-  <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" opacity="0.35">
-    <circle cx="24" cy="8" r="3" fill="#fff"/>
-  <circle cx="32" cy="8" r="3" fill="#fff"/>
-  <circle cx="40" cy="8" r="3" fill="#fff"/>
-  <circle cx="48" cy="8" r="3" fill="#fff"/>
-  <circle cx="56" cy="8" r="3" fill="#fff"/>
-  <circle cx="64" cy="8" r="3" fill="#fff"/>
-  <circle cx="24" cy="16" r="3" fill="#fff"/>
-  <circle cx="32" cy="16" r="3" fill="#fff"/>
-  <circle cx="40" cy="16" r="3" fill="#fff"/>
-  <circle cx="48" cy="16" r="3" fill="#fff"/>
-  <circle cx="56" cy="16" r="3" fill="#fff"/>
-  <circle cx="64" cy="16" r="3" fill="#fff"/>
-  <circle cx="8" cy="24" r="3" fill="#fff"/>
-  <circle cx="16" cy="24" r="3" fill="#fff"/>
-  <circle cx="24" cy="24" r="3" fill="#fff"/>
-  <circle cx="32" cy="24" r="3" fill="#fff"/>
-  <circle cx="40" cy="24" r="3" fill="#fff"/>
-  <circle cx="48" cy="24" r="3" fill="#fff"/>
-  <circle cx="56" cy="24" r="3" fill="#fff"/>
-  <circle cx="64" cy="24" r="3" fill="#fff"/>
-  <circle cx="72" cy="24" r="3" fill="#fff"/>
-  <circle cx="80" cy="24" r="3" fill="#fff"/>
-  <circle cx="8" cy="32" r="3" fill="#fff"/>
-  <circle cx="16" cy="32" r="3" fill="#fff"/>
-  <circle cx="72" cy="32" r="3" fill="#fff"/>
-  <circle cx="80" cy="32" r="3" fill="#fff"/>
-  <circle cx="8" cy="40" r="3" fill="#fff"/>
-  <circle cx="16" cy="40" r="3" fill="#fff"/>
-  <circle cx="32" cy="40" r="3" fill="#fff"/>
-  <circle cx="40" cy="40" r="3" fill="#fff"/>
-  <circle cx="48" cy="40" r="3" fill="#fff"/>
-  <circle cx="56" cy="40" r="3" fill="#fff"/>
-  <circle cx="72" cy="40" r="3" fill="#fff"/>
-  <circle cx="80" cy="40" r="3" fill="#fff"/>
-  <circle cx="8" cy="48" r="3" fill="#fff"/>
-  <circle cx="16" cy="48" r="3" fill="#fff"/>
-  <circle cx="32" cy="48" r="3" fill="#fff"/>
-  <circle cx="56" cy="48" r="3" fill="#fff"/>
-  <circle cx="72" cy="48" r="3" fill="#fff"/>
-  <circle cx="80" cy="48" r="3" fill="#fff"/>
-  <circle cx="8" cy="56" r="3" fill="#fff"/>
-  <circle cx="16" cy="56" r="3" fill="#fff"/>
-  <circle cx="32" cy="56" r="3" fill="#fff"/>
-  <circle cx="56" cy="56" r="3" fill="#fff"/>
-  <circle cx="72" cy="56" r="3" fill="#fff"/>
-  <circle cx="80" cy="56" r="3" fill="#fff"/>
-  <circle cx="8" cy="64" r="3" fill="#fff"/>
-  <circle cx="16" cy="64" r="3" fill="#fff"/>
-  <circle cx="32" cy="64" r="3" fill="#fff"/>
-  <circle cx="40" cy="64" r="3" fill="#fff"/>
-  <circle cx="48" cy="64" r="3" fill="#fff"/>
-  <circle cx="56" cy="64" r="3" fill="#fff"/>
-  <circle cx="72" cy="64" r="3" fill="#fff"/>
-  <circle cx="80" cy="64" r="3" fill="#fff"/>
-  <circle cx="8" cy="72" r="3" fill="#fff"/>
-  <circle cx="16" cy="72" r="3" fill="#fff"/>
-  <circle cx="72" cy="72" r="3" fill="#fff"/>
-  <circle cx="80" cy="72" r="3" fill="#fff"/>
-  <circle cx="8" cy="80" r="3" fill="#fff"/>
-  <circle cx="16" cy="80" r="3" fill="#fff"/>
-  <circle cx="24" cy="80" r="3" fill="#fff"/>
-  <circle cx="32" cy="80" r="3" fill="#fff"/>
-  <circle cx="40" cy="80" r="3" fill="#fff"/>
-  <circle cx="48" cy="80" r="3" fill="#fff"/>
-  <circle cx="56" cy="80" r="3" fill="#fff"/>
-  <circle cx="64" cy="80" r="3" fill="#fff"/>
-  <circle cx="72" cy="80" r="3" fill="#fff"/>
-  <circle cx="80" cy="80" r="3" fill="#fff"/>
-</svg>
+  <svg width="52" height="42" viewBox="0 0 56 44" fill="none" opacity="0.35">
+    <rect x="1" y="7" width="54" height="36" rx="3" stroke="#fff" stroke-width="2"/>
+    <circle cx="28" cy="25" r="10" stroke="#fff" stroke-width="2"/>
+    <circle cx="28" cy="25" r="4" fill="#fff"/>
+    <path d="M19 7 L22 2 H34 L37 7" stroke="#fff" stroke-width="2"/>
+    <circle cx="44" cy="14" r="2.5" fill="#fff"/>
+  </svg>
   <p>カメラへのアクセスを<br>許可してください</p>
   <button id="startBtn" onclick="startCamera()">Start</button>
   <span id="errMsg"></span>
@@ -406,7 +341,7 @@
     b:{label:'blue channel', bar:'#3377ff'}
   };
 
-  let animFrame=null, activeTimeout=null, cycling=false;
+  let animFrame=null, activeTimeout=null, cycling=true;
   const seq=['r','g','b']; let seqIdx=0;
   let currentStream=null, facingMode='environment';
 
@@ -454,6 +389,8 @@
       applyStream(stream);
       startScr.style.display = 'none';
       controls.style.display = 'flex';
+      btnCycle.classList.add('on');
+      seqIdx=0; activateColor(seq[0]);
     } catch(e) {
       errMsg.textContent = e.name==='NotAllowedError' ? '許可が必要です' : 'エラー: '+e.message;
     }
