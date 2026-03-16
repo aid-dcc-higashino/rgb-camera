@@ -157,11 +157,11 @@
   .btn { font-family: var(--font); font-size: clamp(16px,4.5vw,20px); letter-spacing: 0.1em; }
   .btn:active, .btn-cycle:active, .btn-flip:active { transform: scale(0.90); }
   .btn-r { color: #ff6666; border-color: rgba(255,100,100,0.6); }
-  .btn-r.on { background: rgba(255,51,51,0.2); color: #ff3333; box-shadow: 0 0 28px rgba(255,51,51,0.5); border-color: #ff5555; }
+  .btn-r.on { background: #ff3333; color: #000; box-shadow: 0 0 28px rgba(255,51,51,0.75); border-color: #ff3333; }
   .btn-g { color: #66ffaa; border-color: rgba(100,255,170,0.6); }
-  .btn-g.on { background: rgba(51,255,136,0.2); color: #33ff88; box-shadow: 0 0 28px rgba(51,255,136,0.5); border-color: #55ffaa; }
+  .btn-g.on { background: #33ff88; color: #000; box-shadow: 0 0 28px rgba(51,255,136,0.75); border-color: #33ff88; }
   .btn-b { color: #66aaff; border-color: rgba(100,170,255,0.6); }
-  .btn-b.on { background: rgba(51,119,255,0.2); color: #3377ff; box-shadow: 0 0 28px rgba(51,119,255,0.5); border-color: #5599ff; }
+  .btn-b.on { background: #3377ff; color: #000; box-shadow: 0 0 28px rgba(51,119,255,0.75); border-color: #3377ff; }
   .btn-cycle {
     font-family: var(--font); font-size: clamp(7px,2vw,8px);
     letter-spacing: 0.06em; text-transform: uppercase;
@@ -377,6 +377,7 @@
 
   function activateColor(ch) {
     clearOverlays();
+    for (const k in btns) btns[k].classList.remove('on');
     overlays[ch].classList.add('active');
     btns[ch].classList.add('on');
     chanLabel.className = ch+'-on'; chanLabel.textContent = colorInfo[ch].label;
