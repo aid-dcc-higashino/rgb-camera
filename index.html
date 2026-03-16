@@ -118,24 +118,27 @@
 
   .btn-row {
     display: flex;
-    gap: 18px;
+    gap: clamp(8px, 3vw, 18px);
     align-items: center;
     justify-content: center;
+    width: 100%;
+    padding: 0 12px;
   }
 
   .btn {
-    width: 80px;
-    height: 80px;
+    width: clamp(60px, 18vw, 80px);
+    height: clamp(60px, 18vw, 80px);
     border-radius: 50%;
     border: 2px solid;
     background: rgba(0,0,0,0.35);
     font-family: 'Courier New', monospace;
-    font-size: 24px;
+    font-size: clamp(18px, 5vw, 24px);
     font-weight: bold;
     cursor: pointer;
     transition: background 0.08s, box-shadow 0.12s, transform 0.08s;
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
+    flex-shrink: 0;
   }
   .btn:active { transform: scale(0.90); }
 
@@ -149,14 +152,14 @@
   .btn-b.on { background: #3377ff; color: #000; box-shadow: 0 0 32px rgba(51,119,255,0.8); border-color: #3377ff; }
 
   .btn-sub {
-    width: 58px;
-    height: 58px;
+    width: clamp(46px, 13vw, 58px);
+    height: clamp(46px, 13vw, 58px);
     border-radius: 50%;
     border: 1.5px solid rgba(255,255,255,0.2);
     background: rgba(0,0,0,0.3);
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.4);
     font-family: 'Courier New', monospace;
-    font-size: 9px;
+    font-size: clamp(7px, 2vw, 9px);
     letter-spacing: 0.05em;
     cursor: pointer;
     text-transform: uppercase;
@@ -168,9 +171,20 @@
     align-items: center;
     justify-content: center;
     gap: 3px;
+    flex-shrink: 0;
   }
   .btn-sub:active { transform: scale(0.92); }
-  .btn-sub.on { border-color: rgba(255,255,255,0.6); color: rgba(255,255,255,0.9); }
+
+  @keyframes cyclepulse {
+    0%, 100% { box-shadow: 0 0 0px rgba(255,255,255,0.0); }
+    50%       { box-shadow: 0 0 14px rgba(255,255,255,0.5); }
+  }
+  .btn-sub.on {
+    border-color: #fff;
+    color: #000;
+    background: #fff;
+    animation: cyclepulse 1.2s ease-in-out infinite;
+  }
 </style>
 </head>
 <body>
